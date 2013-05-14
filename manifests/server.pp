@@ -9,14 +9,13 @@ class ossec::server (
   $ossec_ignorepaths = []
 ) {
   include ossec::common
-	
+  
   # install package
   case $lsbdistid {
     /(Ubuntu|ubuntu|Debian|debian)/ : {
-        package { "ossec-hids-server":
-          ensure  => installed,
-          require => Apt::Source['ossec_ppa'],
-        }
+      package { "ossec-hids-server":
+        ensure  => installed,
+        require => Apt::Source['ossec_ppa'],
       }
     }
     default: { fail("OS family not supported") }
@@ -24,10 +23,10 @@ class ossec::server (
 
 #  include rsyslog::server
 #  package{ $ossec::common::hidsserverpackage:
-#	ensure => present,
-#	require => Apt::Repo["ossec"]
+#  ensure => present,
+#  require => Apt::Repo["ossec"]
 #}
-	
+  
   service { $ossec::common::hidsserverservice:
     ensure => running,
     enable => true,
@@ -52,7 +51,7 @@ class ossec::server (
     notify => Service[$ossec::common::hidsserverservice]
   }
 
-#	Concat::Fragment <<| tag == 'ossec' |>>
+#  Concat::Fragment <<| tag == 'ossec' |>>
 
   concat::fragment { "ossec.conf_90" :
     target => '/var/ossec/etc/ossec.conf',

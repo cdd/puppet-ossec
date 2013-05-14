@@ -7,10 +7,9 @@ class ossec::client (
 
   case $lsbdistid {
     /(Ubuntu|ubuntu|Debian|debian)/ : {
-        package { "ossec-hids-agent":
-          ensure => installed,
-          require => Apt::Source['ossec_ppa'],
-        }
+      package { "ossec-hids-agent":
+        ensure => installed,
+        require => Apt::Source['ossec_ppa'],
       }
     }
     default: { fail("OS family not supported") }
@@ -47,14 +46,14 @@ class ossec::client (
   }
 
   # get log from rsyslog for apache
-#	file {"/etc/rsyslog.d/30-ossec_agent.conf":
-#		ensure  => file,
-#		group   => root,
-#		owner   => root,
-#		source  => "puppet:///modules/ossec/30-ossec_agent.conf",
-#		notify  => Service['rsyslog'],
-#		require => Package['rsyslog'],
-#	}
+#  file {"/etc/rsyslog.d/30-ossec_agent.conf":
+#    ensure  => file,
+#    group   => root,
+#    owner   => root,
+#    source  => "puppet:///modules/ossec/30-ossec_agent.conf",
+#    notify  => Service['rsyslog'],
+#    require => Package['rsyslog'],
+#  }
 
   include concat::setup
   concat { "/var/ossec/etc/client.keys":
