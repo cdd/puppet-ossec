@@ -13,81 +13,13 @@ class ossec::server (
   # install package
   case $lsbdistid {
     /(Ubuntu|ubuntu|Debian|debian)/ : {
-      case $architecture {
-        "amd64","x86_64": {
-          file { "/opt/debs/ossec-hids-server_2.6.0-ubuntu1_amd64.deb":
-            owner   => root,
-            group   => root,
-            mode    => 644,
-            ensure  => present,
-            source => "puppet:///modules/ossec/ossec-hids-server_2.6.0-ubuntu1_amd64.deb",
-            require => File["/opt/debs"]
-          }
-          package { "ossec-hids-server":
-            provider => dpkg,
-            ensure => installed,
-            source => "/opt/debs/ossec-hids-server_2.6.0-ubuntu1_amd64.deb",
-            require => File["/opt/debs/ossec-hids-server_2.6.0-ubuntu1_amd64.deb"]
-          }
+        package { "ossec-hids-server":
+          ensure  => installed,
+          require => Apt::Source['ossec_ppa'],
         }
-        "i386": {
-          file { "/opt/debs/ossec-hids-server_2.6.0-ubuntu1_i386.deb":
-            owner   => root,
-            group   => root,
-            mode    => 644,
-            ensure  => present,
-            source => "puppet:///modules/ossec/ossec-hids-server_2.6.0-ubuntu1_i386.deb",
-            require => File["/opt/debs"]
-          }
-          package { "ossec-hids-server":
-            provider => dpkg,
-            ensure => installed,
-            source => "/opt/debs/ossec-hids-server_2.6.0-ubuntu1_i386.deb",
-            require => File["/opt/debs/ossec-hids-server_2.6.0-ubuntu1_i386.deb"]
-          }
-        }
-        default: { fail("architecture not supported") }
-      }
-       
-      # bugfix for ossec 2.6.0 (resolve in the ossec git repo)
-      file {'/var/ossec/bin/ossec-logtest':
-        target => '/var/ossec/ossec-logtest',
-        ensure => link,
-      }
-    }
-    /(CentOS|RedHat)/ : {
-      package { 'mysql': ensure => present }
-      file { "/opt/rpm/ossec-hids-2.6.0-5.${ossec::common::redhatversion}.${architecture}.rpm":
-        owner   => root,
-        group   => root,
-        mode    => 644,
-        ensure  => present,
-        source => "puppet:///modules/ossec/ossec-hids-2.6.0-5.${ossec::common::redhatversion}.${architecture}.rpm",
-        require => [File["/opt/rpm"],Package['inotify-tools']]
-      }
-      package { "ossec-hids":
-        provider => rpm,
-        ensure => installed,
-        source => "/opt/rpm/ossec-hids-2.6.0-5.${ossec::common::redhatversion}.${architecture}.rpm",
-        require => File["/opt/rpm/ossec-hids-2.6.0-5.${ossec::common::redhatversion}.${architecture}.rpm"]
-      }
-      file { "/opt/rpm/ossec-hids-server-2.6.0-5.${ossec::common::redhatversion}.${architecture}.rpm":
-        owner   => root,
-        group   => root,
-        mode    => 644,
-        ensure  => present,
-        source => "puppet:///modules/ossec/ossec-hids-server-2.6.0-5.${ossec::common::redhatversion}.${architecture}.rpm",
-        require => File["/opt/rpm"]
-      }
-      package { $ossec::common::hidsserverpackage:
-        provider => rpm,
-        ensure => installed,
-        source => "/opt/rpm/ossec-hids-server-2.6.0-5.${ossec::common::redhatversion}.${architecture}.rpm",
-        require => [File["/opt/rpm/ossec-hids-server-2.6.0-5.${ossec::common::redhatversion}.${architecture}.rpm"],Package['mysql']]
       }
     }
     default: { fail("OS family not supported") }
-
   }
 
 #  include rsyslog::server

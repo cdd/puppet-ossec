@@ -1,6 +1,6 @@
 = Requirements
 
-- OS: ubuntu/debian, redhat/centos
+- OS: ubuntu/debian (missing packages for redhat/centos)
 
 
 = Overview
@@ -84,5 +84,6 @@ CLIENT
 
  Copyright (C) 2011 Savoir-faire Linux
  Author Nicolas Zin <nicolas.zin@savoirfairelinux.com>
+ Modified by Krishna Dole <krishna@collaborativedrug.com> 2013-05
  Licence: GPL v2
 
